@@ -3,22 +3,31 @@
 {% block title %}Processed Data{% endblock %}
 
 {% block body %}
-    
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Processed Data</h1>
 
-    <h1>Processed Data</h1>
-    <h2>formulaire</h1>
-    {# Render the Facture form #}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
-    h2>Données sauvegardées :</h2>
-    <p>Contrat : {{ saved_facture.getContrat() }}</p>
-    <p>Client : {{ saved_facture.getClient() }}</p>
-    {% if processed_data %}
-        {% for key, value in processed_data %}
-            <p><strong>{{ key|capitalize }}:</strong> {{ value }}</p>
-        {% endfor %}
-    {% else %}
-        <p>No processed data available.</p>
-    {% endif %}
+        <h2>Formulaire</h2>
+        {# Render the Facture form #}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+
+        <h2>Données sauvegardées :</h2>
+        <div style="margin: 20px 0;">
+            <p>Contrat : {{ saved_facture.getContrat() }}</p>
+            <p>Client : {{ saved_facture.getClient() }}</p>
+        </div>
+
+        
+    </div>
+    <h2>Données traitées :</h2>
+        {% if processed_data %}
+            <div style="margin: 20px 0;">
+                {% for key, value in processed_data %}
+                    <p><strong>{{ key|capitalize }}:</strong> {{ value }}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No processed data available.</p>
+        {% endif %}
 {% endblock %}
