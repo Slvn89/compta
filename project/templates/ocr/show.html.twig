@@ -1,36 +1,23 @@
-{# ocr/show.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Processed Data{% endblock %}
 
 {% block body %}
+    
+
     <h1>Processed Data</h1>
-
+    <h2>formulaire</h1>
+    {# Render the Facture form #}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+    h2>Données sauvegardées :</h2>
+    <p>Contrat : {{ saved_facture.getContrat() }}</p>
+    <p>Client : {{ saved_facture.getClient() }}</p>
     {% if processed_data %}
-        {% if processed_data.nom is defined %}
-            <p><strong>Nom:</strong> {{ processed_data.nom }}</p>
-        {% endif %}
-
-        {% if processed_data.prenom is defined %}
-            <p><strong>Prénom:</strong> {{ processed_data.prenom }}</p>
-        {% endif %}
-
-        {% if processed_data.contrat is defined %}
-            <p><strong>Contrat:</strong> {{ processed_data.contrat }}</p>
-        {% endif %}
-
-        {% if processed_data.consommation is defined %}
-            <p><strong>Consommation:</strong> {{ processed_data.consommation }}</p>
-        {% endif %}
-
-        {% if processed_data.facture is defined %}
-            <p><strong>Facture:</strong> {{ processed_data.facture }}</p>
-        {% endif %}
-
-        {% if processed_data.client is defined %}
-            <p><strong>Client:</strong> {{ processed_data.client }}</p>
-        {% endif %}
+        {% for key, value in processed_data %}
+            <p><strong>{{ key|capitalize }}:</strong> {{ value }}</p>
+        {% endfor %}
     {% else %}
         <p>No processed data available.</p>
     {% endif %}

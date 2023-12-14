@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Facture;
+use App\Form\FactureType;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,6 +11,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+use Symfony\Component\HttpFoundation\Response;
 
 class OCRController extends AbstractController
 {
@@ -30,8 +34,10 @@ class OCRController extends AbstractController
     /**
      * @Route("/ocr/process-file", name="process_file", methods={"POST"})
      */
-    public function processFile(Request $request)
+    public function processFile(Request $request, PersistenceManagerRegistry $doctrine): Response
     {
+        dump('Before processing file'); // Ajoutez cette ligne
+
         $uploadedFile = $request->files->get('file');
 
         if (!$uploadedFile) {
@@ -40,10 +46,38 @@ class OCRController extends AbstractController
 
         $processedData = $this->processUploadedFile($uploadedFile);
 
-        return $this->render('ocr/show.html.twig', [
-            'processed_data' => $processedData,
+        $facture = new Facture();
+
+
+        // Assuming the keys 'contrat' and 'client' exist in $processedData
+        $contrat = $processedData['contrat'];
+        $client = $processedData['client'];
+
+        if ($contrat && $client) {
+            // Set the values to the Facture entity
+            $facture->setContrat($contrat);
+            $facture->setClient($client);
+        }
+
+        $form = $this->createForm(FactureType::class, $facture);
+        $form->handleRequest($request);
+
+            // Save to the database
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($facture);
+        $entityManager->flush();
+
+        $savedFacture = $entityManager->getRepository(Facture::class)->find($facture->getId());
+
+    return $this->render('ocr/show.html.twig', [
+        'processed_data' => $processedData,
+        'saved_facture' => $savedFacture,
+        'form' => $form->createView(),
         ]);
     }
+
+
+
 
     private function processUploadedFile(UploadedFile $file): array
     {
@@ -60,7 +94,21 @@ class OCRController extends AbstractController
         $tempDir = sys_get_temp_dir();
         $tiffFilePath = $tempDir . '/' . uniqid('converted_', true) . '.tiff';
 
-        $process = new Process(['gs', '-sDEVICE=tiff24nc', '-r300', '-o', $tiffFilePath, $pdfFilePath]);
+        // Ajoutez des options Ghostscript selon vos besoins
+        $gsOptions = [
+            '-sDEVICE=tiff24nc',
+            '-r300',
+            '-o',
+            $tiffFilePath,
+            '-dNOPAUSE',
+            '-dBATCH',
+            '-dSAFER',
+            '-dQUIET',
+            '-dTextAlphaBits=4',
+            '-dGraphicsAlphaBits=4',
+        ];
+
+        $process = new Process(['gs', ...$gsOptions, $pdfFilePath]);
         $process->mustRun();
 
         return $tiffFilePath;
@@ -68,12 +116,22 @@ class OCRController extends AbstractController
 
     private function runTesseract(string $imageFilePath): string
     {
-        $process = new Process(['tesseract', $imageFilePath, '-']);
-        $process->setTimeout(120); // Définir un délai plus long, par exemple 120 secondes
+        $tesseractOptions = [
+            $imageFilePath,
+            '-',
+            '1', // Use LSTM OCR Engine
+            '--hocr',
+        ];
 
-        $process->mustRun();
+        $process = new Process(['tesseract', ...$tesseractOptions]);
+        $process->setTimeout(120);
 
-        return $process->getOutput();
+        try {
+            $process->mustRun();
+            return $process->getOutput();
+        } catch (ProcessFailedException $exception) {
+            throw new \RuntimeException("Erreur lors de l'exécution de Tesseract. " . $exception->getMessage());
+        }
     }
 
     private function runPythonScript(string $tesseractOutput): array
@@ -84,21 +142,11 @@ class OCRController extends AbstractController
         $command = [$pythonExecutable, $scriptPath, $tesseractOutput];
         $process = new Process($command);
 
-        // Ajoutez un var_dump pour voir la commande exacte
-        var_dump($command);
-
         try {
-            // Ajoutez un var_dump pour voir la sortie brute
-            var_dump($process->mustRun()->getOutput());
-
+            $process->mustRun();
             $decodedOutput = json_decode($process->getOutput(), true);
-
-            // Ajoutez un var_dump pour voir la sortie JSON décodée
-            var_dump($decodedOutput);
-
             return $decodedOutput;
         } catch (ProcessFailedException $exception) {
-         
             throw new \RuntimeException("Erreur lors de l'exécution du script Python. " . $exception->getMessage());
         }
     }

@@ -80,7 +80,7 @@ virtualenv-install: ## Install virtual environment
 	$(EXEC) /venv/bin/pipx install spacy
 
 spacy-install-fr: ## Install spaCy French model
-	$(EXEC) sh -c "/venv/bin/python -m spacy download fr_core_news_sm"
+	$(EXEC) sh -c "/venv/bin/python -m spacy download fr_core_news_md"
 
 install-dependencies: ## Install dependencies including Ghostscript and Tesseract
 	$(EXEC) apt-get update 
