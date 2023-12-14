@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Facture;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,6 +15,10 @@ class FactureType extends AbstractType
         $builder
             ->add('contrat')
             ->add('client')
+            ->add('submit', SubmitType::class, [
+                'label' => 'Envoyer',
+                'attr' => ['class' => 'btn btn-primary'],
+            ]);
         ;
     }
 

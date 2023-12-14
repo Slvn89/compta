@@ -21,12 +21,12 @@ class Facture
     /**
      * @ORM\Column(nullable=true)
      */
-    private ?string $contrat = null;
+    private ?int $contrat = null;
 
     /**
      * @ORM\Column(nullable=true)
      */
-    private ?string $client = null;
+    private ?int $client = null;
 
     public function getId(): ?int
     {
