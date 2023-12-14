@@ -36,7 +36,6 @@ class OCRController extends AbstractController
      */
     public function processFile(Request $request, PersistenceManagerRegistry $doctrine): Response
     {
-        dump('Before processing file'); // Ajoutez cette ligne
 
         $uploadedFile = $request->files->get('file');
 
@@ -62,17 +61,17 @@ class OCRController extends AbstractController
         $form = $this->createForm(FactureType::class, $facture);
         $form->handleRequest($request);
 
-            // Save to the database
+        // Save to the database
         $entityManager = $doctrine->getManager();
         $entityManager->persist($facture);
         $entityManager->flush();
 
         $savedFacture = $entityManager->getRepository(Facture::class)->find($facture->getId());
 
-    return $this->render('ocr/show.html.twig', [
-        'processed_data' => $processedData,
-        'saved_facture' => $savedFacture,
-        'form' => $form->createView(),
+        return $this->render('ocr/show.html.twig', [
+            'processed_data' => $processedData,
+            'saved_facture' => $savedFacture,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -94,7 +93,6 @@ class OCRController extends AbstractController
         $tempDir = sys_get_temp_dir();
         $tiffFilePath = $tempDir . '/' . uniqid('converted_', true) . '.tiff';
 
-        // Ajoutez des options Ghostscript selon vos besoins
         $gsOptions = [
             '-sDEVICE=tiff24nc',
             '-r300',
