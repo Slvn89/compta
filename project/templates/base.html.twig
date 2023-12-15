@@ -29,13 +29,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ path('app_home') }}">Accueil <span class="sr-only"></span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('ocr_upload') }}">Ajouter Facture</a>
-                </li>
-            </ul>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ path('app_home') }}">Accueil </a>
+        </li>
+        {% if app.user %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('ocr_upload') }}">Ajouter Facture</a>
+            </li>
+        {% endif %}
+    </ul>
             <ul class="navbar-nav ml-auto">
                 {% if app.user %}
                 <li class="nav-item">

@@ -69,6 +69,7 @@ class OCRController extends AbstractController
             'processed_data' => $processedData,
             'form' => $form->createView(),
         ]);
+        
     }
 
     /**
@@ -102,15 +103,15 @@ class OCRController extends AbstractController
             // Marquer comme confirmé
             $confirmed = true;
         }
-
+        
         // Afficher la vue avec les données sauvegardées
         return $this->render('ocr/show.html.twig', [
             'saved_facture' => $facture,
             'confirmed' => $confirmed,
         ]);
     }
-
-
+    
+    
 
     private function processUploadedFile(UploadedFile $file): array
     {
@@ -197,7 +198,7 @@ class OCRController extends AbstractController
 
         $process = new Process(['tesseract', ...$tesseractOptions]);
         $process->setTimeout(120);
-
+        
         try {
             $process->mustRun();
             return $process->getOutput();
@@ -206,7 +207,7 @@ class OCRController extends AbstractController
         }
     }
 
-    private function runPythonScript(string $text): array
+    private function runPythonScript(string $text): array 
     {
         $scriptPath = $this->getParameter('kernel.project_dir') . '/scripts/process_data.py';
         $pythonExecutable = $this->getParameter('kernel.project_dir') . '/venv/bin/python';
@@ -218,6 +219,7 @@ class OCRController extends AbstractController
             $process->mustRun();
             $decodedOutput = json_decode($process->getOutput(), true);
             return $decodedOutput;
+            
         } catch (ProcessFailedException $exception) {
             throw new \RuntimeException("Erreur lors de l'exécution du script Python. " . $exception->getMessage());
         }
