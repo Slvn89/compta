@@ -1,0 +1,21 @@
+{# templates/secteur/choix_secteur.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Choix du Secteur{% endblock %}
+
+{% block body %}
+    <h1>Choix du Secteur</h1>
+    <ul>
+        {% for secteur in secteurs %}
+            <li>{{ secteur.nom }}</li>
+        {% endfor %}
+    </ul>
+
+    {# Display the form #}
+    {{ form_start(form) }}
+        {{ form_row(form.nom) }}
+        <button type="submit">Choisir le Secteur</button>
+    {{ form_end(form) }}
+
+{% endblock %}
