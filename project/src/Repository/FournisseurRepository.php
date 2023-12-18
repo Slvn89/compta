@@ -1,7 +1,5 @@
 <?php
 
-// src/Repository/FournisseurRepository.php
-
 namespace App\Repository;
 
 use App\Entity\Fournisseur;
@@ -10,6 +8,11 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Fournisseur>
+ *
+ * @method Fournisseur|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Fournisseur|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Fournisseur[]    findAll()
+ * @method Fournisseur[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class FournisseurRepository extends ServiceEntityRepository
 {
@@ -18,17 +21,28 @@ class FournisseurRepository extends ServiceEntityRepository
         parent::__construct($registry, Fournisseur::class);
     }
 
-    /**
-     * @return Fournisseur[] Returns an array of Fournisseur objects by Secteur
-     */
-    public function findBySecteur(int $secteurId): array
-    {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.secteur = :secteurId')
-            ->setParameter('secteurId', $secteurId)
-            ->getQuery()
-            ->getResult();
-    }
+//    /**
+//     * @return Fournisseur[] Returns an array of Fournisseur objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('f')
+//            ->andWhere('f.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('f.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    // Ajoutez d'autres méthodes selon vos besoins
+//    public function findOneBySomeField($value): ?Fournisseur
+//    {
+//        return $this->createQueryBuilder('f')
+//            ->andWhere('f.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }

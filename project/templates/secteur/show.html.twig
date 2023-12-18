@@ -1,0 +1,20 @@
+{# templates/secteur/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Secteur{% endblock %}
+
+{% block body %}
+    <h1>Détails du Secteur</h1>
+
+    <p>Nom du secteur : {{ secteur.nomSecteur }}</p>
+
+    <h2>Fournisseurs associés :</h2>
+    <ul>
+        {% for fournisseur in secteur.fournisseurs %}
+            <li>
+                <a href="{{ path('app_fournisseur_show', {'id': fournisseur.id}) }}">{{ fournisseur.nom }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

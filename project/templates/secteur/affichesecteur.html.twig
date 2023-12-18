@@ -1,0 +1,17 @@
+{# templates/secteur/affichesecteur.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Afficher les Secteurs{% endblock %}
+
+{% block body %}
+    <h1>Afficher les Secteurs</h1>
+
+    <ul>
+        {% for secteur in secteurs %}
+            <li>
+                <a href="{{ path('app_secteur_show', {'id': secteur.id}) }}">{{ secteur.nomSecteur }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

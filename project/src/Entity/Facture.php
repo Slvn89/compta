@@ -1,5 +1,7 @@
 <?php
 
+// src/Entity/Facture.php
+
 namespace App\Entity;
 
 use App\Repository\FactureRepository;
@@ -19,40 +21,58 @@ class Facture
     private ?int $id = null;
 
     /**
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private ?int $contrat = null;
 
     /**
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private ?int $client = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Fournisseur::class, inversedBy="factures")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Fournisseur $fournisseur = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getContrat(): ?string
+    public function getContrat(): ?int
     {
         return $this->contrat;
     }
 
-    public function setContrat(?string $contrat): static
+    public function setContrat(?int $contrat): static
     {
         $this->contrat = $contrat;
 
         return $this;
     }
 
-    public function getClient(): ?string
+    public function getClient(): ?int
     {
         return $this->client;
     }
 
-    public function setClient(?string $client): static
+    public function setClient(?int $client): static
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getFournisseur(): ?Fournisseur
+    {
+        return $this->fournisseur;
+    }
+
+    public function setFournisseur(?Fournisseur $fournisseur): static
+    {
+        $this->fournisseur = $fournisseur;
 
         return $this;
     }

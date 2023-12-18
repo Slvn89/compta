@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Facture;
+use App\Entity\Fournisseur;
 use App\Form\FactureType;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 class OCRController extends AbstractController
 {
     private $logger;
+    
 
     public function __construct(LoggerInterface $logger)
     {
@@ -45,6 +47,12 @@ class OCRController extends AbstractController
         // Process the uploaded file and get the data
         $processedData = $this->processUploadedFile($uploadedFile);
 
+        // Get the selected fournisseur ID from the session
+        $selectedFournisseurId = $processedData['selectedFournisseurId'] ?? null;
+
+        // Store the selected fournisseur ID in the session
+        $request->getSession()->set('selected_fournisseur_id', $selectedFournisseurId);
+
         // Create a new Facture entity
         $facture = new Facture();
 
@@ -69,7 +77,6 @@ class OCRController extends AbstractController
             'processed_data' => $processedData,
             'form' => $form->createView(),
         ]);
-        
     }
 
     /**
@@ -82,6 +89,19 @@ class OCRController extends AbstractController
 
         if (!$facture) {
             return $this->redirectToRoute('ocr_upload');
+        }
+
+        // Récupérer l'ID du fournisseur depuis la session
+        $selectedFournisseurId = $request->getSession()->get('selected_fournisseur_id');
+
+        // Si un fournisseur est sélectionné, associer la facture à ce fournisseur
+        if ($selectedFournisseurId) {
+            $entityManager = $doctrine->getManager();
+            $fournisseur = $entityManager->getRepository(Fournisseur::class)->find($selectedFournisseurId);
+
+            if ($fournisseur) {
+                $facture->setFournisseur($fournisseur);
+            }
         }
 
         // Créer le formulaire et gérer la requête
@@ -103,7 +123,7 @@ class OCRController extends AbstractController
             // Marquer comme confirmé
             $confirmed = true;
         }
-        
+
         // Afficher la vue avec les données sauvegardées
         return $this->render('ocr/show.html.twig', [
             'saved_facture' => $facture,
