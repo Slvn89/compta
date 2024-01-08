@@ -1,6 +1,6 @@
 # Variables
 DOCKER = docker
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE = docker compose
 EXEC = $(DOCKER) exec -w /var/www/project www_compta
 PHP = $(EXEC) php
 COMPOSER = $(EXEC) composer
@@ -14,7 +14,7 @@ RED = /bin/echo -e "\x1b[31m\#\# $1\x1b[0m"
 
 ## —— 🔥 App ——
 init: ## Init the project
-	$(MAKE) docker-build
+	
 	$(MAKE) docker-start
 	$(MAKE) composer-install
 	$(MAKE) npm-install

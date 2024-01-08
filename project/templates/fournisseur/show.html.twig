@@ -11,10 +11,15 @@
     <h2>Factures :</h2>
     <ul>
         {% for facture in fournisseur.factures %}
-            <li>{{ facture.id }} - Contrat: {{ facture.contrat }}, Client: {{ facture.client }}</li>
+            <li>
+                {{ facture.id }} - 
+                Numéro de Facture: {{ facture.numeroFacture }}, 
+                Nom du Client: {{ facture.nomClientAcheteur }}, 
+                Total: {{ facture.total }}
+            </li>
         {% endfor %}
     </ul>
 
     <h2>Ajouter une nouvelle facture :</h2>
-    <a href="{{ path('ocr_upload') }}">Ajouter une facture</a>
+    <a href="{{ path('ocr_upload', {'selectedFournisseurId': fournisseur.id}) }}">Ajouter une facture</a>
 {% endblock %}

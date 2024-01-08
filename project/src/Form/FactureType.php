@@ -10,19 +10,31 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+
 class FactureType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('contrat')
-            ->add('client')
             ->add('fournisseur', EntityType::class, [
                 'class' => Fournisseur::class,
                 'choice_label' => 'nom', // Assurez-vous d'adapter cela en fonction de vos besoins
                 'label' => 'Fournisseur',
                 'placeholder' => 'Sélectionner un fournisseur',
+                'required' => false, // Permet la sélection d'un fournisseur non persisté
             ])
+            ->add('nomClientAcheteur')
+            ->add('adresseClientAcheteur')
+            ->add('telephoneClientAcheteur')
+            ->add('numeroFacture')
+            ->add('anneeFacturation')
+
+            ->add('tva')
+            ->add('sousTotal')
+            ->add('total')
+
+
+            
             ->add('submit', SubmitType::class, [
                 'label' => 'Envoyer',
                 'attr' => ['class' => 'btn btn-primary'],

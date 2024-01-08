@@ -1,6 +1,0 @@
-{
-    "require": {
-        "doctrine/annotations": "^2.0",
-        "doctrine/cache": "^2.2"
-    }
-}

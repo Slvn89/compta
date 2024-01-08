@@ -51,19 +51,34 @@ class FournisseurController extends AbstractController
         $form = $this->createFormBuilder()
             ->add('submit', SubmitType::class, ['label' => 'Ajouter une facture'])
             ->getForm();
-
+    
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirectToRoute('app_fournisseur_new_facture', ['id' => $fournisseur->getId()]);
+            $request->getSession()->set('selected_fournisseur_id', $fournisseur->getId());
+    
+            // Redirect to the controller that renders the upload form
+            return $this->redirectToRoute('ocr_upload');
         }
-
+    
         $factures = $fournisseur->getFactures();
-
+    
         return $this->render('fournisseur/show.html.twig', [
             'fournisseur' => $fournisseur,
             'form' => $form->createView(),
             'factures' => $factures,
+        ]);
+    }
+    
+    // In your OCRController where you render the upload form
+    public function uploadForm(Request $request)
+    {
+        // Retrieve the selected fournisseur ID from the session
+        $selectedFournisseurId = $request->getSession()->get('selected_fournisseur_id');
+    
+        // Pass the selectedFournisseurId to the template
+        return $this->render('ocr/upload.html.twig', [
+            'selectedFournisseurId' => $selectedFournisseurId,
         ]);
     }
 

@@ -23,10 +23,14 @@
                 {% if saved_facture.getFournisseur() is not null %}
                     <p>Fournisseur : {{ saved_facture.getFournisseur().getNom() }}</p>
                 {% endif %}
-                {% if saved_facture is not null %}
-                    <p>Contrat : {{ saved_facture.getContrat() }}</p>
-                    <p>Client : {{ saved_facture.getClient() }}</p>
-                {% endif %}
+                <p>Nom du Client Acheteur : {{ saved_facture.getNomClientAcheteur() }}</p>
+                <p>Adresse du Client Acheteur : {{ saved_facture.getAdresseClientAcheteur() }}</p>
+                <p>Téléphone du Client Acheteur : {{ saved_facture.getTelephoneClientAcheteur() }}</p>
+                <p>Numéro de Facture : {{ saved_facture.getNumeroFacture() }}</p>
+                <p>Année de Facturation : {{ saved_facture.getAnneeFacturation() }}</p>
+                <p>TVA : {{ saved_facture.getTva() }}</p>
+                <p>Sous-Total : {{ saved_facture.getSousTotal() }}</p>
+                <p>Total : {{ saved_facture.getTotal() }}</p>
             </div>
         {% endif %}
     </div>
